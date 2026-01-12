@@ -20,6 +20,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import org.rosterleague.common.LeagueType;
 
 
 @Entity
@@ -31,6 +32,7 @@ public abstract class League implements Serializable {
     protected String name;
     protected String sport;
     protected Collection<Team> teams;
+    protected LeagueType type;
         
     @Id
     public String getId() {
@@ -57,6 +59,10 @@ public abstract class League implements Serializable {
         this.sport = sport;
     }
 
+    public LeagueType getType() { return type; }
+
+    public void setType(LeagueType type) { this.type = type; }
+
     @OneToMany(cascade=CascadeType.ALL, mappedBy="league")
     public Collection<Team> getTeams() {
         return teams;
@@ -73,5 +79,4 @@ public abstract class League implements Serializable {
     public void dropTeam(Team team) {
         this.getTeams().remove(team);
     }
-    
 }

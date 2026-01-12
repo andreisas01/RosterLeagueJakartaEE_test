@@ -390,7 +390,7 @@ public class RequestBean implements Request, Serializable {
             return null;
         } else {
             for (League league : leagues) {
-                LeagueDetails leagueDetails = new LeagueDetails(league.getId(), league.getName(), league.getSport());
+                LeagueDetails leagueDetails = new LeagueDetails(league.getId(), league.getName(), league.getSport(), league.getType());
                 detailsList.add(leagueDetails);
             }
 
@@ -471,11 +471,11 @@ public class RequestBean implements Request, Serializable {
     public void createLeague(LeagueDetails leagueDetails) {
         logger.info("createLeague");
         try {
-            if (leagueDetails.getSport().equalsIgnoreCase("soccer") || leagueDetails.getSport().equalsIgnoreCase("swimming") || leagueDetails.getSport().equalsIgnoreCase("basketball") || leagueDetails.getSport().equalsIgnoreCase("baseball")) {
-                SummerLeague league = new SummerLeague(leagueDetails.getId(), leagueDetails.getName(), leagueDetails.getSport());
+            if (leagueDetails.getType() == LeagueType.summer || leagueDetails.getType() == LeagueType.any) {
+                SummerLeague league = new SummerLeague(leagueDetails.getId(), leagueDetails.getName(), leagueDetails.getSport(), leagueDetails.getType());
                 em.persist(league);
-            } else if (leagueDetails.getSport().equalsIgnoreCase("hockey") || leagueDetails.getSport().equalsIgnoreCase("skiing") || leagueDetails.getSport().equalsIgnoreCase("snowboarding")) {
-                WinterLeague league = new WinterLeague(leagueDetails.getId(), leagueDetails.getName(), leagueDetails.getSport());
+            } else if (leagueDetails.getType() == LeagueType.winter) {
+                WinterLeague league = new WinterLeague(leagueDetails.getId(), leagueDetails.getName(), leagueDetails.getSport(), leagueDetails.getType());
                 em.persist(league);
             } else {
                 throw new IncorrectSportException("The specified sport is not valid.");
@@ -503,11 +503,39 @@ public class RequestBean implements Request, Serializable {
 
         try {
             League league = em.find(League.class, leagueId);
-            leagueDetails = new LeagueDetails(league.getId(), league.getName(), league.getSport());
+            leagueDetails = new LeagueDetails(league.getId(), league.getName(), league.getSport(), league.getType());
         } catch (Exception ex) {
             throw new EJBException(ex);
         }
         return leagueDetails;
+    }
+
+    @Override
+    public List<LeagueDetails> getAllLeagues() {
+        logger.info("getAllLeagues");
+        List<LeagueDetails> detailsList = new ArrayList<>();
+        List<League> leagues;
+
+        try {
+            CriteriaQuery<League> cq = cb.createQuery(League.class);
+            if (cq != null) {
+                Root<League> league = cq.from(League.class);
+
+                cq.select(league);
+                TypedQuery<League> q = em.createQuery(cq);
+                leagues = q.getResultList();
+            } else {
+                leagues = new ArrayList<>();
+            }
+
+            for (League league : leagues) {
+                LeagueDetails leagueDetails = new LeagueDetails(league.getId(), league.getName(), league.getSport(), league.getType());
+                detailsList.add(leagueDetails);
+            }
+        } catch (Exception ex) {
+            throw new EJBException(ex);
+        }
+        return detailsList;
     }
 
     @Override

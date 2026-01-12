@@ -57,6 +57,8 @@ public interface Request {
 
     List<TeamDetails> getTeamsOfLeague(String leagueId);
 
+    List<LeagueDetails> getAllLeagues();
+
     void removeLeague(String leagueId);
 
     void removePlayer(String playerId);

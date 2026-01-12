@@ -21,12 +21,14 @@ public class LeagueDetails implements Serializable {
     private final String id;
     private final String name;
     private final String sport;
+    private final LeagueType type;
 
-    public LeagueDetails(String id, String name, String sport) {
+    public LeagueDetails(String id, String name, String sport, LeagueType type) {
 
         this.id = id;
         this.name = name;
         this.sport = sport;
+        this.type = type;
     }
 
     public String getId() {
@@ -41,9 +43,14 @@ public class LeagueDetails implements Serializable {
         return sport;
     }
 
+    public LeagueType getType() { return type; }
+
     @Override
     public String toString() {
-        return id + " " + name + " " + sport;
+        if (type == null) {
+            return id + " " + name + " " + sport;
+        }
+        return id + " " + name + " " + sport + " " + type;
     }
 
 }

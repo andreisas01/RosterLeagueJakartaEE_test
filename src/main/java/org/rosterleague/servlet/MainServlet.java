@@ -6,10 +6,7 @@ import java.util.List;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
-import org.rosterleague.common.LeagueDetails;
-import org.rosterleague.common.PlayerDetails;
-import org.rosterleague.common.Request;
-import org.rosterleague.common.TeamDetails;
+import org.rosterleague.common.*;
 
 @WebServlet(name = "mainServlet", value = "/")
 public class MainServlet extends HttpServlet {
@@ -20,10 +17,11 @@ public class MainServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ejbRequest.clearAllEntities();
-        insertInfo();
 
         printer = response.getWriter();
         response.setContentType("text/plain");
+
+        insertInfo();
 
         getSomeInfo();
         getMoreInfo();
@@ -33,10 +31,10 @@ public class MainServlet extends HttpServlet {
     private void insertInfo() {
         try {
             // Leagues
-            ejbRequest.createLeague(new LeagueDetails("L1", "Mountain", "Soccer"));
-            ejbRequest.createLeague(new LeagueDetails("L2", "Valley", "Basketball"));
-            ejbRequest.createLeague(new LeagueDetails("L3", "Foothills", "Soccer"));
-            ejbRequest.createLeague(new LeagueDetails("L4", "Alpine", "Snowboarding"));
+            ejbRequest.createLeague(new LeagueDetails("L1", "Mountain", "Soccer", LeagueType.any));
+            ejbRequest.createLeague(new LeagueDetails("L2", "Valley", "Basketball", LeagueType.summer));
+            ejbRequest.createLeague(new LeagueDetails("L3", "Foothills", "Soccer", LeagueType.any));
+            ejbRequest.createLeague(new LeagueDetails("L4", "Alpine", "Snowboarding", LeagueType.winter));
 
             // Teams
             ejbRequest.createTeamInLeague(new TeamDetails("T1", "Honey Bees", "Visalia"), "L1");
@@ -286,6 +284,11 @@ public class MainServlet extends HttpServlet {
             printer.println("List all the sports of player P28: ");
             sportList = ejbRequest.getSportsOfPlayer("P28");
             printDetailsList(sportList);
+            printer.println();
+
+            printer.println("List all leagues: ");
+            leagueList = ejbRequest.getAllLeagues();
+            printDetailsList(leagueList);
             printer.println();
 
         } catch (Exception ex) {

@@ -16,6 +16,7 @@ import java.io.Serializable;
 
 import jakarta.persistence.Entity;
 import org.rosterleague.common.IncorrectSportException;
+import org.rosterleague.common.LeagueType;
 
 @Entity
 public class SummerLeague extends League implements Serializable {
@@ -25,11 +26,12 @@ public class SummerLeague extends League implements Serializable {
     /** Creates a new instance of SummerLeague */
     public SummerLeague() {
     }
-    
-    public SummerLeague(String id, String name, String sport) 
+
+    public SummerLeague(String id, String name, String sport, LeagueType type)
             throws IncorrectSportException {
         this.id = id;
         this.name = name;
+        this.type = type;
         if (sport.equalsIgnoreCase("swimming") ||
                 sport.equalsIgnoreCase("soccer") ||
                 sport.equalsIgnoreCase("basketball") ||
